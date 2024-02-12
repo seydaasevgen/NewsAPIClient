@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.seyda.newsapiclient.data.model.APIResponse
@@ -17,6 +18,7 @@ import com.seyda.newsapiclient.domain.usecase.GetNewsHeadlinesUseCase
 import com.seyda.newsapiclient.domain.usecase.GetSavedNewsUseCase
 import com.seyda.newsapiclient.domain.usecase.GetSearchedNewsUseCase
 import com.seyda.newsapiclient.domain.usecase.SaveNewsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -24,14 +26,15 @@ import retrofit2.http.Query
 import java.lang.Exception
 import javax.inject.Inject
 
-class NewsViewModel(
+@HiltViewModel
+class NewsViewModel @Inject constructor(
     private val app: Application,
     private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
     private val getSearchedNewsUseCase: GetSearchedNewsUseCase,
     private val saveNewsUseCase: SaveNewsUseCase,
     private val getSavedNewsUseCase: GetSavedNewsUseCase,
     private val deleteSavedNewsUseCase: DeleteSavedNewsUseCase
-) : AndroidViewModel(app) {
+) : ViewModel() {
     val newsHeadlines: MutableLiveData<Resource<APIResponse>> = MutableLiveData()
 
     //val newsList = arrayListOf<Resource<APIResponse>>()
@@ -105,7 +108,7 @@ class NewsViewModel(
     }
 
     fun getSavedNews() = liveData {
-        getSavedNewsUseCase.execute().collect{
+        getSavedNewsUseCase.execute().collect {
             emit(it)
         }
     }

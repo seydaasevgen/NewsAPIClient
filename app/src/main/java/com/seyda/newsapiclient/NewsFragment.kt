@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.seyda.newsapiclient.data.model.Article
 import com.seyda.newsapiclient.data.util.Resource
 import com.seyda.newsapiclient.databinding.FragmentNewsBinding
 import com.seyda.newsapiclient.databinding.NewsListItemBinding
@@ -68,7 +69,10 @@ class NewsFragment : Fragment() {
                     hideProgressBar()
                     response.data?.let {
                         Log.i("MYTAG", "came here ${it.articles.toList().size}")
-                        newsAdapter.differ.submitList(it.articles.toList())
+                        val currentList = arrayListOf<Article>()
+                        currentList.addAll(newsAdapter.differ.currentList)
+                        currentList.addAll(it.articles)
+                        newsAdapter.differ.submitList(currentList)
                         if (it.totalResults % 20 == 0) {
                             pages = it.totalResults / 20
                         } else {
